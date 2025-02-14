@@ -89,62 +89,20 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
           ],
         ),
       ),
-      body: Stack(
+      body: Column(
         children: [
-          // Background Image with Blur Effect
-          Positioned.fill(
-            child: Image.asset(
-              'home.jpg', // Replace with your actual image
-              fit: BoxFit.cover,
-            ),
+          Image.asset(
+            'assets/digimon_homepage.jpg', // Make sure this file exists in your assets folder
+            width: double.infinity, // Make the image span the full width
+            height: 200, // Adjust height as needed
+            fit: BoxFit.cover, // Ensures the image covers the area nicely
           ),
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Adjust blur intensity
-              child: Container(
-                color: Colors.black.withOpacity(0.3), // Dark overlay for readability
+          Expanded(
+            child: Center(
+              child: Text(
+                'Welcome to Digimon Home!',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            ),
-          ),
-
-          // Main Content
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Check out this cool Digimons!",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      if (constraints.maxWidth < 600) {
-                        return ListView.builder(
-                          itemCount: digimons.length,
-                          itemBuilder: (context, index) {
-                            return _buildCard(index, constraints.maxWidth * 0.8);
-                          },
-                        );
-                      }
-                      return GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 5,
-                          crossAxisSpacing: 8.0,
-                          mainAxisSpacing: 8.0,
-                          childAspectRatio: 0.7,
-                        ),
-                        itemCount: digimons.length,
-                        itemBuilder: (context, index) {
-                          return _buildCard(index, constraints.maxWidth / 5);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
             ),
           ),
         ],

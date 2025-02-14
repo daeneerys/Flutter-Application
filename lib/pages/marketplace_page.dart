@@ -34,7 +34,6 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
   }
 
   void buyDigimon(dynamic digimon) {
-    // Check if Digimon is already owned
     bool alreadyOwned = widget.ownedDigimons.any((d) => d['id'] == digimon['id']);
 
     if (alreadyOwned) {
@@ -48,7 +47,6 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
       return;
     }
 
-    // Show confirmation dialog
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -65,8 +63,7 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                 widget.ownedDigimons.add(digimon);
               });
 
-              widget.updateInventory(widget.ownedDigimons); // Update inventory in main state
-
+              widget.updateInventory(widget.ownedDigimons);
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -88,108 +85,91 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image with Blur Effect
           Positioned.fill(
             child: Image.asset(
-              "background.png", // Change to your background image
+              "background.png",
               fit: BoxFit.cover,
             ),
           ),
           Positioned.fill(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5), // Adjust blur intensity
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                color: Colors.black.withOpacity(0.3), // Slightly dark overlay
+                color: Colors.black.withOpacity(0.2),
               ),
             ),
           ),
-          // Main UI
           Column(
             children: [
               AppBar(
                 title: const Text("Digimon Marketplace", style: TextStyle(color: Colors.white)),
-                backgroundColor: Colors.indigo, // Slight transparency
+                backgroundColor: Colors.indigo,
+                elevation: 0,
+              ),
+              const Text(
+                "Check out this cool Digimons!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               Expanded(
                 child: digimons.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
-                    : LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (constraints.maxWidth < 600) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(10),
-                        itemCount: digimons.length,
-                        itemBuilder: (context, index) {
-                          return _buildCard(index, constraints.maxWidth * 0.8);
-                        },
+                    ? const Center(
+                  child: Text(
+                    "No Digimons available!",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                )
+                    : Padding(
+                  padding:
+                  const EdgeInsets.all(12),
+                  child: ListView.builder(
+                    itemCount: digimons.length,
+                    itemBuilder: (context, index) {
+                      var digimon = digimons[index];
+                      bool alreadyOwned = widget.ownedDigimons.any((d) => d['id'] == digimon['id']);
+                      return Card(
+                        color: Colors.indigo[900],
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(12),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              digimon['image'],
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          title: Text(
+                            digimon['name'],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "ID: ${digimon['id']}",
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                          trailing: ElevatedButton(
+                            onPressed: alreadyOwned ? null : () => buyDigimon(digimon),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: alreadyOwned ? Colors.grey : Colors.amber,
+                            ),
+                            child: Text(alreadyOwned ? "Owned" : "Get"),
+                          ),
+                        ),
                       );
-                    }
-                    return GridView.builder(
-                      padding: const EdgeInsets.all(10),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemCount: digimons.length,
-                      itemBuilder: (context, index) {
-                        return _buildCard(index, constraints.maxWidth / 5);
-                      },
-                    );
-                  },
+                    },
+                  ),
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCard(int index, double cardWidth) {
-    var digimon = digimons[index];
-    bool alreadyOwned = widget.ownedDigimons.any((d) => d['id'] == digimon['id']);
-
-    return Card(
-      color: Colors.indigo[900],
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              digimon['image'],
-              height: 200,
-              width: cardWidth,
-              fit: BoxFit.fill,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            digimon['name'],
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'ID: ${digimon['id']}',
-            style: const TextStyle(color: Colors.white70),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: alreadyOwned ? null : () => buyDigimon(digimon),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: alreadyOwned ? Colors.grey : Colors.amber,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-            child: Text(alreadyOwned ? "Owned" : "Get"),
           ),
         ],
       ),
