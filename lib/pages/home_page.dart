@@ -1,3 +1,4 @@
+import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
 import 'inventory_page.dart';
 import 'marketplace_page.dart';
@@ -14,6 +15,7 @@ class DigimonHomePage extends StatefulWidget {
 
 class _DigimonHomePageState extends State<DigimonHomePage> {
   List<dynamic> digimons = [];
+  List<dynamic> ownedDigimons = [];
   final DigimonApiService apiService = DigimonApiService();
 
   @override
@@ -32,6 +34,11 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
     } catch (e) {
       print("Error: $e");
     }
+  }
+  void updateInventory(List<dynamic> newInventory) {
+    setState(() {
+      ownedDigimons = newInventory;
+    });
   }
 
   @override
@@ -52,16 +59,26 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
               currentAccountPicture: const CircleAvatar(
                 backgroundImage: AssetImage('assets/profile_pic.png'),
               ),
-              decoration: BoxDecoration(color: Colors.indigo),
+              decoration: const BoxDecoration(color: Colors.indigo),
             ),
             _drawerItem(context, Icons.home, "Home Page", () {
               Navigator.pop(context);
             }),
             _drawerItem(context, Icons.inventory, "Digimon Inventory", () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const DigimonInventoryPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DigimonInventoryPage(ownedDigimons: ownedDigimons, updateInventory: updateInventory),
+                ),
+              );
             }),
             _drawerItem(context, Icons.shopping_cart, "Digimon Marketplace", () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const DigimonMarketplacePage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DigimonMarketplacePage(ownedDigimons: ownedDigimons, updateInventory: updateInventory),
+                ),
+              );
             }),
             _drawerItem(context, Icons.person, "Profile Page", () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
@@ -72,48 +89,65 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
           ],
         ),
       ),
-      body: digimons.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Your Digimons",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+      body: Stack(
+        children: [
+          // Background Image with Blur Effect
+          Positioned.fill(
+            child: Image.asset(
+              'home.jpg', // Replace with your actual image
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  // If the screen width is small (e.g., mobile), use a column layout
-                  if (constraints.maxWidth < 600) {
-                    return ListView.builder(
-                      itemCount: digimons.length,
-                      itemBuilder: (context, index) {
-                        return _buildCard(index, constraints.maxWidth * 0.8); // Smaller card width on mobile
-                      },
-                    );
-                  }
-                  // If the screen width is larger, use a grid layout
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5, // Set the number of cards per row (maximum of 5)
-                      crossAxisSpacing: 8.0, // Spacing between columns
-                      mainAxisSpacing: 8.0, // Spacing between rows
-                      childAspectRatio: 0.7, // Aspect ratio of the card (height vs width)
-                    ),
-                    itemCount: digimons.length,
-                    itemBuilder: (context, index) {
-                      return _buildCard(index, constraints.maxWidth / 5); // Adjust card width in grid view
-                    },
-                  );
-                },
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Adjust blur intensity
+              child: Container(
+                color: Colors.black.withOpacity(0.3), // Dark overlay for readability
               ),
             ),
-          ],
-        ),
+          ),
+
+          // Main Content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Check out this cool Digimons!",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth < 600) {
+                        return ListView.builder(
+                          itemCount: digimons.length,
+                          itemBuilder: (context, index) {
+                            return _buildCard(index, constraints.maxWidth * 0.8);
+                          },
+                        );
+                      }
+                      return GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemCount: digimons.length,
+                        itemBuilder: (context, index) {
+                          return _buildCard(index, constraints.maxWidth / 5);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
     );
@@ -160,7 +194,7 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
   ListTile _drawerItem(BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return ListTile(
       leading: Icon(icon, color: Colors.indigo),
-      title: Text(title, style: TextStyle(color: Colors.indigo)),
+      title: Text(title, style: const TextStyle(color: Colors.indigo)),
       onTap: onTap,
     );
   }
