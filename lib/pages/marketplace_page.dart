@@ -102,13 +102,10 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
           Column(
             children: [
               AppBar(
-                title: const Text("Digimon Marketplace", style: TextStyle(color: Colors.white)),
-                backgroundColor: Colors.indigo,
+                title: const Text("Digimon Marketplace", style: TextStyle(color: Colors.white,fontSize: 28,
+              fontFamily: 'Payback')),
+                backgroundColor:Color(0xFF1976D2),
                 elevation: 0,
-              ),
-              const Text(
-                "Check out this cool Digimons!",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               Expanded(
                 child: digimons.isEmpty
@@ -127,7 +124,7 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                       var digimon = digimons[index];
                       bool alreadyOwned = widget.ownedDigimons.any((d) => d['id'] == digimon['id']);
                       return Card(
-                        color: Colors.indigo[900],
+                        color: Color(0xFF1976D2),
                         elevation: 5,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
