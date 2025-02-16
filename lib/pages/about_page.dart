@@ -144,7 +144,7 @@ class AboutPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.0),
             width: double.infinity,
-            color: Color(0xFF1565C0), // Dark Digimon blue
+            color: Color(0xFF1565C0),
             child: Text(
               "© 2025 Digimon World. All rights reserved.",
               textAlign: TextAlign.center,
