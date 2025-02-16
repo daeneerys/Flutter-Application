@@ -61,7 +61,7 @@ class _DigimonInventoryPageState extends State<DigimonInventoryPage> {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'digimons.jpg', // Change this to your actual background image path
+              'digimons.jpg',
               fit: BoxFit.cover,
             ),
           ),

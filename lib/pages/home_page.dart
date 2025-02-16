@@ -89,23 +89,124 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Image.asset(
-            'assets/digimon_homepage.jpg', // Make sure this file exists in your assets folder
-            width: double.infinity, // Make the image span the full width
-            height: 200, // Adjust height as needed
-            fit: BoxFit.cover, // Ensures the image covers the area nicely
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                'Welcome to Digimon Home!',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch, // Ensures full width
+          children: [
+            Image.asset(
+              'digimon_homepage.jpg', // Ensure correct path
+              width: double.infinity,
+              height: 585,
+              fit: BoxFit.cover,
+            ),
+
+            // Welcome message container
+            Container(
+              color: Colors.indigo,
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center, // Centers the text
+              child: const Text(
+                'WELCOME TO DIGIMON WORLD!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
-        ],
+
+            // Collect your Digimons section
+            Container(
+              color: const Color(0xFFF1BA63), // Updated background color
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  const Text(
+                    'Collect your Digimons for free!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DigimonMarketplacePage(
+                            ownedDigimons: ownedDigimons,
+                            updateInventory: updateInventory,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Go to Marketplace',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Check out your Digimons section
+            Container(
+              color: Colors.lightBlue,
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  const Text(
+                    'Go check out your Digimons!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DigimonInventoryPage(
+                            ownedDigimons: ownedDigimons,
+                            updateInventory: updateInventory,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.indigo,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Go to Inventory',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       backgroundColor: Colors.white,
     );
