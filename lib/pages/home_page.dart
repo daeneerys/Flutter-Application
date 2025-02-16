@@ -1,4 +1,4 @@
-import 'dart:ui'; // Required for blur effect
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'inventory_page.dart';
 import 'marketplace_page.dart';
@@ -45,8 +45,13 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Digimon Home", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.indigo,
+        title: const Text("Digimon", style:
+        TextStyle
+          (color: Colors.white,
+          fontSize: 28,
+          fontFamily: 'Payback'
+        )),
+        backgroundColor: Color(0xFF1976D2),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: Drawer(
@@ -102,34 +107,35 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
 
             // Welcome message container
             Container(
-              color: Colors.indigo,
+              color: Color(0xFF1976D2),
               padding: const EdgeInsets.all(16),
               alignment: Alignment.center, // Centers the text
               child: const Text(
-                'WELCOME TO DIGIMON WORLD!',
+                'WELCOME TO \nDIGIMON WORLD!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  fontFamily: 'Payback',
+                  fontSize: 40,
+                  color: Color(0xFFFFFFFF),
                 ),
               ),
             ),
 
             // Collect your Digimons section
             Container(
-              color: const Color(0xFFF1BA63), // Updated background color
+              color: Color(0xFFFFC107), // Updated background color
               padding: const EdgeInsets.all(16),
               alignment: Alignment.center,
               child: Column(
                 children: [
                   const Text(
-                    'Collect your Digimons for free!',
+                    'COLLECT YOUR \nDIGIMONS FOR FREE!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                        fontFamily: 'Oxanium',
+                        fontWeight: FontWeight.w700,
+                      color: Color(0xFFFFFFFF),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -146,7 +152,7 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
+                      backgroundColor: Color(0xFF121212),
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -154,7 +160,7 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
                     ),
                     child: const Text(
                       'Go to Marketplace',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 18, fontFamily: 'Poppins', fontWeight: FontWeight.w400, color: Color(0xFFFFFFFF)),
                     ),
                   ),
                 ],
@@ -163,18 +169,19 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
 
             // Check out your Digimons section
             Container(
-              color: Colors.lightBlue,
+              color: Color(0xFFD32F2F),
               padding: const EdgeInsets.all(16),
               alignment: Alignment.center,
               child: Column(
                 children: [
                   const Text(
-                    'Go check out your Digimons!',
+                    'GO CHECK OUT \nYOUR DIGIMONS!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      fontSize: 28,
+                      fontFamily: 'Oxanium',
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFFFFFFFF),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -191,7 +198,7 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
+                      backgroundColor: Color(0xFF121212),
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -199,7 +206,7 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
                     ),
                     child: const Text(
                       'Go to Inventory',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 18, fontFamily: 'Poppins', fontWeight: FontWeight.w400, color: Color(0xFFFFFFFF)),
                     ),
                   ),
                 ],
