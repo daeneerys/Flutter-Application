@@ -78,8 +78,10 @@ class _DigimonInventoryPageState extends State<DigimonInventoryPage> {
           Column(
             children: [
               AppBar(
-                title: const Text("Digimon Inventory", style: TextStyle(color: Colors.white)),
-                backgroundColor: Colors.indigo,
+                title: const Text("Your Inventory", style: TextStyle(color: Colors.white,
+                    fontSize: 28,
+                    fontFamily: 'Payback')),
+                backgroundColor: Color(0xFF1976D2),
                 elevation: 0,
               ),
               Expanded(

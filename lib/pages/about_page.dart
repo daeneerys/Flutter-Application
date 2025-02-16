@@ -12,8 +12,10 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF0D47A1),
       appBar: AppBar(
-        title: Text("About Us"),
-        backgroundColor: Color(0xFF1565C0),
+        title: Text("About Us", style: TextStyle(color: Colors.white,
+            fontSize: 28,
+            fontFamily: 'Payback')),
+        backgroundColor: Color(0xFF1976D2),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -10,8 +10,10 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Taki's Profile", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.deepPurple, // Changed color
+        title: const Text("Taki's Profile", style: TextStyle(color: Colors.white,
+        fontSize: 28,
+        fontFamily: 'Payback')),
+        backgroundColor: Color(0xFF1976D2), // Changed color
       ),
       body: ListView(
         padding: EdgeInsets.zero,
