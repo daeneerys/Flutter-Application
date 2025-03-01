@@ -14,7 +14,9 @@ class DigimonMarketplacePage extends StatefulWidget {
 
 class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
   List<dynamic> digimons = [];
+  List<dynamic> filteredDigimons = []; // For search functionality
   final DigimonApiService apiService = DigimonApiService();
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,13 +26,27 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
 
   void fetchDigimons() async {
     try {
-      var fetchedDigimons = await apiService.fetchDigimons();
+      var digimonIds = List.generate(100, (index) => index + 1); // Fetch IDs 1 to 100
+      var fetchedDigimons = await apiService.fetchMultipleDigimons(digimonIds);
       setState(() {
         digimons = fetchedDigimons;
+        filteredDigimons = fetchedDigimons; // Initialize filtered list
       });
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void filterSearchResults(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredDigimons = digimons;
+      } else {
+        filteredDigimons = digimons
+            .where((digimon) => digimon['name'].toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
   }
 
   void buyDigimon(dynamic digimon) {
@@ -102,13 +118,34 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
           Column(
             children: [
               AppBar(
-                title: const Text("Digimon Marketplace", style: TextStyle(color: Colors.white,fontSize: 28,
-              fontFamily: 'Payback')),
-                backgroundColor:Color(0xFF1976D2),
+                title: const Text(
+                  "Digimon Marketplace",
+                  style: TextStyle(color: Colors.white, fontSize: 28, fontFamily: 'Payback'),
+                ),
+                backgroundColor: Color(0xFF1976D2),
                 elevation: 0,
               ),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: filterSearchResults,
+                  decoration: InputDecoration(
+                    hintText: "Search Digimon...",
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ),
               Expanded(
-                child: digimons.isEmpty
+                child: filteredDigimons.isEmpty
                     ? const Center(
                   child: Text(
                     "No Digimons available!",
@@ -116,13 +153,13 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                   ),
                 )
                     : Padding(
-                  padding:
-                  const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   child: ListView.builder(
-                    itemCount: digimons.length,
+                    itemCount: filteredDigimons.length,
                     itemBuilder: (context, index) {
-                      var digimon = digimons[index];
+                      var digimon = filteredDigimons[index];
                       bool alreadyOwned = widget.ownedDigimons.any((d) => d['id'] == digimon['id']);
+
                       return Card(
                         color: Color(0xFF1976D2),
                         elevation: 5,
@@ -131,13 +168,12 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                         ),
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.all(12),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
                               digimon['image'],
-                              width: 60,
-                              height: 60,
+                              width: 50,
+                              height: 50,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -147,18 +183,16 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              fontFamily: 'Oxanium',
                             ),
-                          ),
-                          subtitle: Text(
-                            "ID: ${digimon['id']}",
-                            style: const TextStyle(color: Colors.white70),
                           ),
                           trailing: ElevatedButton(
                             onPressed: alreadyOwned ? null : () => buyDigimon(digimon),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: alreadyOwned ? Colors.grey : Colors.amber,
+                              backgroundColor: alreadyOwned ? Colors.grey : const Color(0xFFFFC107),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             ),
-                            child: Text(alreadyOwned ? "Owned" : "Get"),
+                            child: const Text("Get", style: TextStyle(color: Color(0xFF121212)) ),
                           ),
                         ),
                       );

@@ -26,15 +26,16 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
 
   void fetchDigimons() async {
     try {
-      var fetchedDigimons = await apiService.fetchDigimons();
+      var digimonIds = List.generate(100, (index) => index + 1); // Fetch IDs 1 to 100
+      var fetchedDigimons = await apiService.fetchMultipleDigimons(digimonIds);
       setState(() {
-        // Limit the number of Digimons to 5
-        digimons = fetchedDigimons.take(5).toList();
+        digimons = fetchedDigimons;
       });
     } catch (e) {
       print("Error: $e");
     }
   }
+
   void updateInventory(List<dynamic> newInventory) {
     setState(() {
       ownedDigimons = newInventory;
