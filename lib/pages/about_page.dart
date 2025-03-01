@@ -29,7 +29,7 @@ class AboutPage extends StatelessWidget {
                   children: [
 
                     Image.asset(
-                      'about_digimon.jpg',
+                      'assets/about_digimon.jpg',
 
                     ),
                     SizedBox(height: 20),
@@ -61,7 +61,7 @@ class AboutPage extends StatelessWidget {
                           child: Column(
                             children: [
                               Image.asset(
-                                'about_marketCard.jpg',
+                                'assets/about_marketCard.jpg',
                               ),
                               SizedBox(height: 10),
                               Text(
@@ -99,7 +99,7 @@ class AboutPage extends StatelessWidget {
                           child: Column(
                             children: [
                               Image.asset(
-                                'about_profileCard.jpg',
+                                'assets/about_profileCard.jpg',
                               ),
                               SizedBox(height: 10),
                               Text(

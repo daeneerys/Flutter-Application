@@ -50,7 +50,7 @@ class _DigimonInventoryPageState extends State<DigimonInventoryPage> {
       inventory.removeAt(index);
     });
 
-    widget.updateInventory(inventory); // Update marketplace when Digimon is removed
+    widget.updateInventory(inventory);
   }
 
   @override
@@ -61,16 +61,16 @@ class _DigimonInventoryPageState extends State<DigimonInventoryPage> {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'digimons.jpg',
+              'assets/digimons.jpg',
               fit: BoxFit.cover,
             ),
           ),
 
-          // Blurry Effect
+
           Positioned.fill(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Adjust blur intensity
-              child: Container(color: Colors.black.withOpacity(0.2)), // Slight dark overlay
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(color: Colors.black.withOpacity(0.2)),
             ),
           ),
 

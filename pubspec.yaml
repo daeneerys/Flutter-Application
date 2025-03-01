@@ -58,6 +58,17 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/about_digimon.jpg
+    - assets/about_marketCard.jpg
+    - assets/about_profileCard.jpg
+    - assets/background.png
+    - assets/digimon_homepage.jpg
+    - assets/digimons.jpg
+    - assets/home.jpg
+    - assets/T.K.jpg
+    - assets/TK_background.jpg
+
   fonts:
     - family: Payback
       fonts:

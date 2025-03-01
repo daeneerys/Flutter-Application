@@ -44,7 +44,7 @@ class ProfilePage extends StatelessWidget {
   Widget buildCoverImage() => Container(
     color: Colors.grey,
     child: Image(
-      image: const AssetImage('Tk_background.jpg'), // Digimon cover image
+      image: const AssetImage('assets/TK_background.jpg'), // Digimon cover image
       width: double.infinity,
       height: coverHeight,
       fit: BoxFit.cover,
@@ -55,7 +55,7 @@ class ProfilePage extends StatelessWidget {
     radius: profileHeight / 2,
     backgroundColor: Colors.grey.shade800,
     backgroundImage: const AssetImage(
-      'T.K.jpg', // Taki's image
+      'assets/T.K.jpg', // Taki's image
     ),
   );
 
@@ -110,7 +110,9 @@ class ProfilePage extends StatelessWidget {
         child: CircleAvatar(
           radius: 24,
           backgroundColor: color,
-          child: Icon(icon, color: Colors.white),
+
+
+             child: Icon(icon, color: Colors.white),
         ),
       );
 

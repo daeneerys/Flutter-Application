@@ -87,7 +87,7 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              "background.png",
+              "assets/background.png",
               fit: BoxFit.cover,
             ),
           ),

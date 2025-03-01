@@ -59,12 +59,12 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: const Text("User Name", style: TextStyle(color: Colors.white)),
-              accountEmail: const Text("user@example.com", style: TextStyle(color: Colors.white70)),
+              accountName: const Text("Takaishi Takeru", style: TextStyle(color: Colors.white)),
+              accountEmail: const Text("TakaishiTakeru@gmail.com", style: TextStyle(color: Colors.white70)),
               currentAccountPicture: const CircleAvatar(
-                backgroundImage: AssetImage('assets/profile_pic.png'),
+                backgroundImage: AssetImage('assets/T.K.jpg'),
               ),
-              decoration: const BoxDecoration(color: Colors.indigo),
+              decoration: const BoxDecoration(color: Color(0xFF0D47A1)),
             ),
             _drawerItem(context, Icons.home, "Home Page", () {
               Navigator.pop(context);
@@ -99,7 +99,7 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch, // Ensures full width
           children: [
             Image.asset(
-              'digimon_homepage.jpg', // Ensure correct path
+              'assets/digimon_homepage.jpg', // Ensure correct path
               width: double.infinity,
               height: 585,
               fit: BoxFit.cover,
