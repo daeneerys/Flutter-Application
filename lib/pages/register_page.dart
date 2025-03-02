@@ -15,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -41,35 +42,66 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _register() {
-    String username = usernameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
+    if (_formKey.currentState!.validate()) {
+      String username = usernameController.text.trim();
+      String email = emailController.text.trim();
+      String password = passwordController.text.trim();
 
-    if (username.isNotEmpty && email.isNotEmpty && password.isNotEmpty && (_selectedImage != null || _webImage != null)) {
-      widget.users.add({
-        'username': username,
-        'email': email,
-        'password': password,
-        'profilePicture': kIsWeb
-            ? String.fromCharCodes(_webImage!)  // Convert Uint8List to String
-            : _selectedImage!.path  // Store file path for mobile
-      });
+      if (_selectedImage != null || _webImage != null) {
+        widget.users.add({
+          'username': username,
+          'email': email,
+          'password': password,
+          'profilePicture': kIsWeb
+              ? String.fromCharCodes(_webImage!) // Convert Uint8List to String
+              : _selectedImage!.path // Store file path for mobile
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Registration successful!")),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration successful!")),
+        );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage(users: widget.users)),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("All fields and profile picture are required!")),
-      );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage(users: widget.users)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Profile picture is required!")),
+        );
+      }
     }
   }
 
+  String? _validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Username is required';
+    }
+    if (value.length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    if (!value.contains('@')) {
+      return 'Invalid email format';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,45 +109,51 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(title: const Text("Register")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(labelText: "Username"),
-            ),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(labelText: "Password"),
-              obscureText: true,
-            ),
-            const SizedBox(height: 10),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: usernameController,
+                decoration: const InputDecoration(labelText: "Username"),
+                validator: _validateUsername,
+              ),
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: "Email"),
+                validator: _validateEmail,
+              ),
+              TextFormField(
+                controller: passwordController,
+                decoration: const InputDecoration(labelText: "Password"),
+                obscureText: true,
+                validator: _validatePassword,
+              ),
+              const SizedBox(height: 10),
 
-            // Display selected image (Web or Mobile)
-            _webImage != null
-                ? Image.memory(_webImage!, height: 100, width: 100, fit: BoxFit.cover) // Web image
-                : _selectedImage != null
-                ? Image.file(_selectedImage!, height: 100, width: 100, fit: BoxFit.cover) // Mobile image
-                : const Text("No image selected"), // Default text
+              // Display selected image (Web or Mobile)
+              _webImage != null
+                  ? Image.memory(_webImage!, height: 100, width: 100, fit: BoxFit.cover) // Web image
+                  : _selectedImage != null
+                  ? Image.file(_selectedImage!, height: 100, width: 100, fit: BoxFit.cover) // Mobile image
+                  : const Text("No image selected"), // Default text
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // Button to pick an image
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: const Text("Pick Profile Picture"),
-            ),
+              // Button to pick an image
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text("Pick Profile Picture"),
+              ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: _register,
-              child: const Text("Register"),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: _register,
+                child: const Text("Register"),
+              ),
+            ],
+          ),
         ),
       ),
     );
