@@ -14,7 +14,7 @@ class DigimonMarketplacePage extends StatefulWidget {
 
 class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
   List<dynamic> digimons = [];
-  List<dynamic> filteredDigimons = []; // For search functionality
+  List<dynamic> filteredDigimons = [];
   final DigimonApiService apiService = DigimonApiService();
   TextEditingController searchController = TextEditingController();
 
@@ -30,22 +30,18 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
       var fetchedDigimons = await apiService.fetchMultipleDigimons(digimonIds);
       setState(() {
         digimons = fetchedDigimons;
-        filteredDigimons = fetchedDigimons; // Initialize filtered list
+        filteredDigimons = fetchedDigimons;
       });
     } catch (e) {
       print("Error: $e");
     }
   }
 
-  void filterSearchResults(String query) {
+  void searchDigimon(String query) {
     setState(() {
-      if (query.isEmpty) {
-        filteredDigimons = digimons;
-      } else {
-        filteredDigimons = digimons
-            .where((digimon) => digimon['name'].toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+      filteredDigimons = digimons
+          .where((digimon) => digimon['name'].toLowerCase().contains(query.toLowerCase()))
+          .toList();
     });
   }
 
@@ -126,22 +122,22 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                 elevation: 0,
               ),
               Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12.0),
                 child: TextField(
                   controller: searchController,
-                  onChanged: filterSearchResults,
+                  onChanged: searchDigimon,
+                  style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Color(0xFFFFFFFF),
                     hintText: "Search Digimon...",
                     hintStyle: const TextStyle(color: Colors.grey),
                     prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                    filled: true,
-                    fillColor: Color(0xFFFFFFFF),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  style: const TextStyle(color: Colors.black),
                 ),
               ),
               Expanded(
@@ -167,33 +163,118 @@ class _DigimonMarketplacePageState extends State<DigimonMarketplacePage> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              digimon['image'],
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
+                        child: ExpansionTile(
+                          trailing: SizedBox.shrink(),
+                          iconColor: Colors.white,
+                          collapsedIconColor: Colors.white,
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Keeps name + arrow and button spaced
+                            children: [
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      digimon['image'],
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+
+                                  // Prevents overflow while keeping the name and arrow together
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.4, // Ensures it does not take too much space
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            digimon['name'],
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Oxanium',
+                                            ),
+                                            overflow: TextOverflow.ellipsis, // Truncate text if too long
+                                            maxLines: 1,
+                                            softWrap: false,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              // "Get" Button with adaptive padding
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  double buttonPadding = constraints.maxWidth < 400 ? 8.0 : 16.0;
+
+                                  return ElevatedButton(
+                                    onPressed: alreadyOwned ? null : () => buyDigimon(digimon),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: alreadyOwned ? Colors.grey : const Color(0xFFFFC107),
+                                      padding: EdgeInsets.symmetric(horizontal: buttonPadding, vertical: 8),
+                                      minimumSize: const Size(90, 40),
+                                    ),
+                                    child: const Text(
+                                      "Get",
+                                      style: TextStyle(
+                                        color: Color(0xFF121212),
+                                        fontFamily: 'Oxanium',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                          title: Text(
-                            digimon['name'],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Oxanium',
-                            ),
-                          ),
-                          trailing: ElevatedButton(
-                            onPressed: alreadyOwned ? null : () => buyDigimon(digimon),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: alreadyOwned ? Colors.grey : const Color(0xFFFFC107),
+                          children: [
+                            Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            ),
-                            child: const Text("Get", style: TextStyle(color: Color(0xFF121212)) ),
-                          ),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "X-Antibody: ${digimon['xAntibody']}",
+                                      style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontFamily: 'Oxanium'),
+                                    ),
+                                    Text(
+                                      "Level: ${digimon['level']}",
+                                      style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontFamily: 'Oxanium'),
+                                    ),
+                                    Text(
+                                      "Attribute: ${digimon['attribute']}",
+                                      style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontFamily: 'Oxanium'),
+                                    ),
+                                    Text(
+                                      "Type: ${digimon['type']}",
+                                      style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontFamily: 'Oxanium'),
+                                    ),
+                                    Text(
+                                      "Field: ${digimon['field']}",
+                                      style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontFamily: 'Oxanium'),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      "Description:",
+                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      digimon['description'],
+                                      style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 14, fontFamily: 'Poppins'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )],
                         ),
                       );
                     },
