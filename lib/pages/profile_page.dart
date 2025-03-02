@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final String username;
+  final String email;
+
+  const ProfilePage({super.key, required this.username, required this.email, required String profilePicture});
 
   final double coverHeight = 200; // Reduced cover height
   final double profileHeight = 120; // Reduced profile height
@@ -10,10 +13,9 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Taki's Profile", style: TextStyle(color: Colors.white,
-        fontSize: 28,
-        fontFamily: 'Payback')),
-        backgroundColor: Color(0xFF1976D2), // Changed color
+        title: const Text("User Profile",
+            style: TextStyle(color: Colors.white, fontSize: 28, fontFamily: 'Payback')),
+        backgroundColor: const Color(0xFF1976D2),
       ),
       body: ListView(
         padding: EdgeInsets.zero,
@@ -27,7 +29,7 @@ class ProfilePage extends StatelessWidget {
 
   Widget buildTop() {
     final bottom = profileHeight / 2;
-    final top = coverHeight - profileHeight; // Adjusted top calculation
+    final top = coverHeight - profileHeight;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -51,6 +53,7 @@ class ProfilePage extends StatelessWidget {
     ),
   );
 
+
   Widget buildProfileImage() => CircleAvatar(
     radius: profileHeight / 2,
     backgroundColor: Colors.grey.shade800,
@@ -61,10 +64,15 @@ class ProfilePage extends StatelessWidget {
 
   Widget buildContent() => Column(
     children: [
-      const SizedBox(height: 16), // Increased spacing
-      const Text(
-        'Takaishi Takeru', // Taki's name
-        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+      const SizedBox(height: 16),
+      Text(
+        username, // Display logged-in user's name
+        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        email, // Display logged-in user's email
+        style: const TextStyle(fontSize: 20, color: Colors.black),
       ),
       const SizedBox(height: 8),
       const Text(
@@ -112,7 +120,7 @@ class ProfilePage extends StatelessWidget {
           backgroundColor: color,
 
 
-             child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: Colors.white),
         ),
       );
 

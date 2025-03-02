@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'inventory_page.dart';
@@ -5,9 +6,19 @@ import 'marketplace_page.dart';
 import 'profile_page.dart';
 import 'about_page.dart';
 import '../digimon_api_service.dart';
+import 'login_page.dart';
 
 class DigimonHomePage extends StatefulWidget {
-  const DigimonHomePage({super.key});
+  final String username;
+  final String email;
+  final String profilePicture;
+
+  const DigimonHomePage({
+    super.key,
+    required this.username,
+    required this.email,
+    required this.profilePicture,
+  });
 
   @override
   State<DigimonHomePage> createState() => _DigimonHomePageState();
@@ -17,6 +28,8 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
   List<dynamic> digimons = [];
   List<dynamic> ownedDigimons = [];
   final DigimonApiService apiService = DigimonApiService();
+
+
 
   @override
   void initState() {
@@ -41,6 +54,14 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
       ownedDigimons = newInventory;
     });
   }
+  void _logout(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage(users: [],)),
+          (route) => false, // Remove all previous routes
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +70,8 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
         title: const Text("Digimon", style:
         TextStyle
           (color: Colors.white,
-          fontSize: 28,
-          fontFamily: 'Payback'
+            fontSize: 28,
+            fontFamily: 'Payback'
         )),
         backgroundColor: Color(0xFF1976D2),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -60,10 +81,14 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: const Text("Takaishi Takeru", style: TextStyle(color: Colors.white)),
-              accountEmail: const Text("TakaishiTakeru@gmail.com", style: TextStyle(color: Colors.white70)),
-              currentAccountPicture: const CircleAvatar(
-                backgroundImage: AssetImage('assets/T.K.jpg'),
+              accountName: Text(widget.username, style: const TextStyle(color: Colors.white)),
+              accountEmail: Text(widget.email, style: const TextStyle(color: Colors.white70)),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: widget.profilePicture.isNotEmpty
+                    ? (widget.profilePicture.startsWith('http')
+                    ? NetworkImage(widget.profilePicture)
+                    : FileImage(File(widget.profilePicture)) as ImageProvider)
+                    : const AssetImage('assets/T.K.jpg'), // Default image
               ),
               decoration: const BoxDecoration(color: Color(0xFF0D47A1)),
             ),
@@ -87,10 +112,19 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
               );
             }),
             _drawerItem(context, Icons.person, "Profile Page", () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfilePage(username: widget.username,
+                  email: widget.email,
+                  profilePicture: widget.profilePicture)));
             }),
             _drawerItem(context, Icons.info, "About Page", () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutPage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  AboutPage(
+                username: widget.username,
+                email: widget.email,
+                profilePicture: widget.profilePicture,)));
+            }),
+            const Divider(), // Separator line
+            _drawerItem(context, Icons.logout, "Logout", () {
+              _logout(context);
             }),
           ],
         ),
@@ -134,8 +168,8 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 28,
-                        fontFamily: 'Oxanium',
-                        fontWeight: FontWeight.w700,
+                      fontFamily: 'Oxanium',
+                      fontWeight: FontWeight.w700,
                       color: Color(0xFFFFFFFF),
                     ),
                   ),
