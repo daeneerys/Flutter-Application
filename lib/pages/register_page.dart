@@ -27,13 +27,11 @@ class _RegisterPageState extends State<RegisterPage> {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       if (kIsWeb) {
-        // Convert to Uint8List for Web
         var bytes = await pickedFile.readAsBytes();
         setState(() {
           _webImage = bytes;
         });
       } else {
-        // Use File for mobile
         setState(() {
           _selectedImage = File(pickedFile.path);
         });
@@ -53,8 +51,8 @@ class _RegisterPageState extends State<RegisterPage> {
           'email': email,
           'password': password,
           'profilePicture': kIsWeb
-              ? String.fromCharCodes(_webImage!) // Convert Uint8List to String
-              : _selectedImage!.path // Store file path for mobile
+              ? String.fromCharCodes(_webImage!)
+              : _selectedImage!.path,
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -74,87 +72,173 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   String? _validateUsername(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Username is required';
-    }
-    if (value.length < 3) {
-      return 'Username must be at least 3 characters';
-    }
+    if (value == null || value.isEmpty) return 'Username is required';
+    if (value.length < 3) return 'Username must be at least 3 characters';
     return null;
   }
 
   String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Email is required';
-    }
-    if (!value.contains('@')) {
-      return 'Invalid email format';
-    }
+    if (value == null || value.isEmpty) return 'Email is required';
+    if (!value.contains('@')) return 'Invalid email format';
     return null;
   }
 
   String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password is required';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
+    if (value == null || value.isEmpty) return 'Password is required';
+    if (value.length < 6) return 'Password must be at least 6 characters';
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: usernameController,
-                decoration: const InputDecoration(labelText: "Username"),
-                validator: _validateUsername,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/register_background.jpg"),
+                fit: BoxFit.cover,
               ),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: "Email"),
-                validator: _validateEmail,
-              ),
-              TextFormField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: "Password"),
-                obscureText: true,
-                validator: _validatePassword,
-              ),
-              const SizedBox(height: 10),
-
-              // Display selected image (Web or Mobile)
-              _webImage != null
-                  ? Image.memory(_webImage!, height: 100, width: 100, fit: BoxFit.cover) // Web image
-                  : _selectedImage != null
-                  ? Image.file(_selectedImage!, height: 100, width: 100, fit: BoxFit.cover) // Mobile image
-                  : const Text("No image selected"), // Default text
-
-              const SizedBox(height: 10),
-
-              // Button to pick an image
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: const Text("Pick Profile Picture"),
-              ),
-
-              const SizedBox(height: 20),
-
-              ElevatedButton(
-                onPressed: _register,
-                child: const Text("Register"),
-              ),
-            ],
+            ),
           ),
-        ),
+
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width > 400 ? 400 : MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Digimon Logo
+                    Image.asset(
+                      "assets/login_logo.png",
+                      width: 150,
+                      height: 150,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Username Field
+                    TextFormField(
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        labelText: "Username",
+                        prefixIcon: const Icon(Icons.person, color: Color(0xFF1565C0)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: _validateUsername,
+                    ),
+                    const SizedBox(height: 15),
+
+                    // Email Field
+                    TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        prefixIcon: const Icon(Icons.email, color: Color(0xFF1565C0)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: _validateEmail,
+                    ),
+                    const SizedBox(height: 15),
+
+                    // Password Field
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        prefixIcon: const Icon(Icons.lock, color: Color(0xFF1565C0)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: _validatePassword,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Profile Picture Upload Section
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
+                          image: _webImage != null
+                              ? DecorationImage(image: MemoryImage(_webImage!), fit: BoxFit.cover)
+                              : _selectedImage != null
+                              ? DecorationImage(image: FileImage(_selectedImage!), fit: BoxFit.cover)
+                              : null,
+                        ),
+                        child: _webImage == null && _selectedImage == null
+                            ? const Center(child: Text("Tap to upload"))
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Register Button
+                    ElevatedButton(
+                      onPressed: _register,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0D47A1),
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Login Redirect Link
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage(users: widget.users)),
+                        );
+                      },
+                      child: const Text(
+                        "Already have an account? Login here",
+                        style: TextStyle(color: Color(0xFF0D47A1)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
