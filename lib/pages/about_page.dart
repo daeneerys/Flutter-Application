@@ -5,7 +5,16 @@ import 'profile_page.dart';
 
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({super.key});
+  final String username;
+  final String email;
+  final String profilePicture;
+
+  const AboutPage({
+    super.key,
+    required this.username,
+    required this.email,
+    required this.profilePicture,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +56,9 @@ class AboutPage extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => DigimonHomePage()),
+                          MaterialPageRoute(builder: (context) => DigimonHomePage(username: username,
+                            email: email,
+                            profilePicture: profilePicture,)),
                         );
                       },
                       child: Card(
@@ -82,12 +93,12 @@ class AboutPage extends StatelessWidget {
 
                     // Profile Page Card
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfilePage()),
-                        );
-                      },
+                      // onTap: () {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(builder: (context) => ProfilePage()),
+                      //   );
+                      // },
                       child: Card(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
