@@ -71,23 +71,46 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) return 'Password is required';
+
+    String pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$';
+    RegExp regex = RegExp(pattern);
+
+    if (!regex.hasMatch(value)) {
+      return 'Password must be at least 6 characters and include\n'
+          '1 uppercase, 1 lowercase, 1 number, and 1 special character';
+    }
+    return null;
+  }
+
+
   String? _validateUsername(String? value) {
     if (value == null || value.isEmpty) return 'Username is required';
     if (value.length < 3) return 'Username must be at least 3 characters';
+
+    // Check if username already exists
+    bool usernameExists = widget.users.any((user) => user['username'] == value);
+    if (usernameExists) return 'Username is already taken';
+
     return null;
   }
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Email is required';
-    if (!value.contains('@')) return 'Invalid email format';
-    return null;
-  }
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(value)) return 'Invalid email format';
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) return 'Password is required';
-    if (value.length < 6) return 'Password must be at least 6 characters';
+    bool emailExists = widget.users.any((user) => user['email'] == value);
+    if (emailExists) return 'Email is already registered';
+
     return null;
   }
+  //
+  // String? _validatePassword(String? value) {
+  //   if (value == null || value.isEmpty) return 'Password is required';
+  //   if (value.length < 6) return 'Password must be at least 6 characters';
+  //   return null;
+  // }
 
   @override
   Widget build(BuildContext context) {

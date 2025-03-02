@@ -1,10 +1,20 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
   final String username;
   final String email;
+  final String profilePicture;
 
-  const ProfilePage({super.key, required this.username, required this.email, required String profilePicture});
+  const ProfilePage({
+    super.key,
+    required this.username,
+    required this.email,
+    required this.profilePicture, // Pass profile picture correctly
+  });
 
   final double coverHeight = 200; // Reduced cover height
   final double profileHeight = 120; // Reduced profile height
@@ -57,9 +67,11 @@ class ProfilePage extends StatelessWidget {
   Widget buildProfileImage() => CircleAvatar(
     radius: profileHeight / 2,
     backgroundColor: Colors.grey.shade800,
-    backgroundImage: const AssetImage(
-      'assets/T.K.jpg', // Taki's image
-    ),
+    backgroundImage: profilePicture.isNotEmpty
+        ? (kIsWeb
+        ? MemoryImage(Uint8List.fromList(profilePicture.codeUnits)) // Web
+        : FileImage(File(profilePicture)) as ImageProvider) // Mobile
+        : const AssetImage('assets/T.K.jpg'), // Default image
   );
 
   Widget buildContent() => Column(

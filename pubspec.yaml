@@ -69,6 +69,8 @@ flutter:
     - assets/home.jpg
     - assets/T.K.jpg
     - assets/TK_background.jpg
+    - assets/login_logo.png
+    - assets/register_background.jpg
 
   fonts:
     - family: Payback

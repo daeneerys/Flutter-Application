@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'inventory_page.dart';
 import 'marketplace_page.dart';
@@ -85,11 +86,12 @@ class _DigimonHomePageState extends State<DigimonHomePage> {
               accountEmail: Text(widget.email, style: const TextStyle(color: Colors.white70)),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: widget.profilePicture.isNotEmpty
-                    ? (widget.profilePicture.startsWith('http')
-                    ? NetworkImage(widget.profilePicture)
-                    : FileImage(File(widget.profilePicture)) as ImageProvider)
+                    ? (kIsWeb
+                    ? MemoryImage(Uint8List.fromList(widget.profilePicture.codeUnits)) // Web
+                    : FileImage(File(widget.profilePicture)) as ImageProvider) // Mobile
                     : const AssetImage('assets/T.K.jpg'), // Default image
               ),
+
               decoration: const BoxDecoration(color: Color(0xFF0D47A1)),
             ),
             _drawerItem(context, Icons.home, "Home Page", () {
